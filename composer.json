@@ -1,0 +1,20 @@
+{
+    "name": "pryazhnikov/issues-review-combiner",
+    "description": "The combiner of issues related texts",
+    "type": "project",
+    "require": {
+        "php": ">=7.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Victor Pryazhnikov",
+            "email": "victor@pryazhnikov.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ReviewCombiner\\": "src/"
+        }
+    }
+}

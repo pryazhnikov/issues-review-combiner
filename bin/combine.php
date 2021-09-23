@@ -3,26 +3,10 @@
 /**
  * @author Victor Pryazhnikov <victor@pryazhnikov.com>
  */
+require(__DIR__ . "/../vendor/autoload.php");
 
-class IssueDetector
-{
-    public function getIssue(string $text): ?string
-    {
-        // "* Hello" -> "Hello"
-        $cleanLine = preg_replace('#^[\s*\-]*#', '', $text);
-        // "(Done)" => ""
-        $cleanLine = preg_replace('#^\(([^)]+)\)#', '', $cleanLine);
-        // "[WIP]" -> ""
-        $cleanLine = preg_replace('#^\[(\]+)\]#', '', $cleanLine);
-
-        // Lines to match: "SRV-123" / "* SRV-123" / " -  SRV-123"
-        if (preg_match('#^\s*([A-Z]+-\d+)\s*#i', $cleanLine, $match)) {
-            return $match[1];
-        } else {
-            return null;
-        }
-    }
-}
+use \ReviewCombiner\IssueDetector;
+use \ReviewCombiner\ReviewTextCombiner;
 
 function testIssueDetector(IssueDetector $detector): void
 {
@@ -39,87 +23,6 @@ function testIssueDetector(IssueDetector $detector): void
     foreach ($testCases as $line => $expectedIssue) {
         assert($expectedIssue === $detector->getIssue($line), "Issue detector test case #{$index} failed!");
         $index++;
-    }
-}
-
-
-class ReviewTextCombiner
-{
-    private $linesList = [];
-
-    private $isAfterEmptyLine = false;
-
-    /** @var \IssueDetector */
-    private $issueDetector;
-
-    public function __construct(IssueDetector $issueDetector)
-    {
-        $this->issueDetector = $issueDetector;
-    }
-
-    public function reset()
-    {
-        $this->linesList = [];
-        $this->isAfterEmptyLine = false;
-    }
-
-    public function addInputLine(string $line): void
-    {
-        $isEmptyLine = $this->isEmptyLine($line);
-        $lineIssue = $this->issueDetector->getIssue($line);
-        if ($lineIssue) {
-            /**
-             * All lines related to the same issue will be aggregated and written together.
-             * Key is used to prevent the adding of the same lines of text.
-             */
-            $this->linesList[$lineIssue][$line] = $line;
-        } elseif (!$isEmptyLine) {
-            /**
-             * Empty lines from input will be ignored and replaced by issue splitters.
-             * @see getOutputText()
-             */
-            $this->linesList[] = $line;
-        }
-
-        $this->isAfterEmptyLine = $isEmptyLine;
-    }
-
-    private function isEmptyLine(string $line): bool
-    {
-        return ('' === trim($line));
-    }
-
-    public function getOutputText(): string
-    {
-        $result = implode(
-            "\n",
-            array_map(
-                function ($item) {
-                    return $this->getOutputItemString($item);
-                },
-                $this->linesList
-            )
-        ) . "\n";
-
-        return $result;
-    }
-
-    /**
-     * @param array|string $item
-     * @return string
-     */
-    private function getOutputItemString($item): string
-    {
-        if (is_array($item)) {
-            $result = implode('', $item);
-            if (count($item) > 1) {
-                $result = ("\n" . $result);
-            }
-        } else {
-            $result = $item;
-        }
-
-        return $result;
     }
 }
 
