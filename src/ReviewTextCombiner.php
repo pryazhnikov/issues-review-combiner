@@ -6,12 +6,11 @@ namespace ReviewCombiner;
 
 class ReviewTextCombiner
 {
-    private $linesList = [];
+    private array $linesList = [];
 
-    private $isAfterEmptyLine = false;
+    private bool $isAfterEmptyLine = false;
 
-    /** @var \IssueDetector */
-    private $issueDetector;
+    private IssueDetector $issueDetector;
 
     public function __construct(IssueDetector $issueDetector)
     {
