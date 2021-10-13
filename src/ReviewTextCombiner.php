@@ -25,6 +25,7 @@ class ReviewTextCombiner
 
     public function addInputLine(string $line): void
     {
+        $line = $this->normalizeLine($line);
         $isEmptyLine = $this->isEmptyLine($line);
         $lineIssue = $this->issueDetector->getIssue($line);
         if ($lineIssue) {
@@ -42,6 +43,12 @@ class ReviewTextCombiner
         }
 
         $this->isAfterEmptyLine = $isEmptyLine;
+    }
+
+    private function normalizeLine(string $line): string
+    {
+        $line = rtrim($line);
+        return $line;
     }
 
     private function isEmptyLine(string $line): bool
@@ -71,14 +78,11 @@ class ReviewTextCombiner
     private function getOutputItemString($item): string
     {
         if (is_array($item)) {
-            $result = implode('', $item);
-            if (count($item) > 1) {
-                $result = ("\n" . $result);
-            }
+            $result = implode(PHP_EOL, $item);
         } else {
             $result = $item;
         }
 
-        return $result;
+        return $result . PHP_EOL;
     }
 }

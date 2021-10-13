@@ -46,15 +46,18 @@ class ReviewTextCombinerTest extends TestCase
         $input = <<<TEXT
             * SRV-42424 Add relaxations for non empty responses - initial version is ready
             
+            * QA-12345 Improvements of unit tests
             * SRV-42424 Add relaxations for non empty responses - the fix was deployed
             TEXT;
 
-        // Duplicated lines should be flattened
+        // The same issue lines should be grouped
+        // The order inside of the group should be the same as in the original text
         $expectedOutput = <<<TEXT
-            
             * SRV-42424 Add relaxations for non empty responses - initial version is ready
             * SRV-42424 Add relaxations for non empty responses - the fix was deployed
-
+            
+            * QA-12345 Improvements of unit tests
+            \n
             TEXT;
 
         $actualOutput = $this->buildOutputText($input);
@@ -64,19 +67,22 @@ class ReviewTextCombinerTest extends TestCase
 
     public function testOutputDuplicatedIssueLines(): void
     {
-        // Current implementation requires an empty line after the last duplicated item
+        /**
+         * Two things to mention here:
+         * 1. a whitespace character in the end of the first issue line
+         * 2. the lack of an newline character after the second issue line
+         */
         $input = <<<TEXT
-            * SRV-42424 Add relaxations for non empty responses
+            * SRV-42424 Add relaxations for non empty responses\t
             
             * SRV-42424 Add relaxations for non empty responses
-            
             TEXT;
 
         // Duplicated lines should be flattened
+        // (The trailing whitespaces & newlines are ignored)
         $expectedOutput = <<<TEXT
             * SRV-42424 Add relaxations for non empty responses
-            
-            
+            \n
             TEXT;
 
         $actualOutput = $this->buildOutputText($input);
@@ -102,7 +108,6 @@ class ReviewTextCombinerTest extends TestCase
         $expectedOutput = <<<TEXT
             (Day #1)
             
-            
             * (In progress) SRV-42424 Add relaxations for non empty responses
             * (Done) SRV-42424 Add relaxations for non empty responses (part #2)
             
@@ -115,7 +120,7 @@ class ReviewTextCombinerTest extends TestCase
             * Preparations for the meetings
             
             * Discussion of something important
-
+            \n
             TEXT;
 
         $actualOutput = $this->buildOutputText($input);
