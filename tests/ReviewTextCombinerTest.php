@@ -46,13 +46,17 @@ class ReviewTextCombinerTest extends TestCase
         $input = <<<TEXT
             * SRV-42424 Add relaxations for non empty responses - initial version is ready
             
+            * QA-12345 Improvements of unit tests
             * SRV-42424 Add relaxations for non empty responses - the fix was deployed
             TEXT;
 
-        // Duplicated lines should be flattened
+        // The same issue lines should be grouped
+        // The order inside of the group should be the same as in the original text
         $expectedOutput = <<<TEXT
             * SRV-42424 Add relaxations for non empty responses - initial version is ready
             * SRV-42424 Add relaxations for non empty responses - the fix was deployed
+            
+            * QA-12345 Improvements of unit tests
             \n
             TEXT;
 
@@ -75,7 +79,7 @@ class ReviewTextCombinerTest extends TestCase
             TEXT;
 
         // Duplicated lines should be flattened
-        // T
+        // (The trailing whitespaces & newlines are ignored)
         $expectedOutput = <<<TEXT
             * SRV-42424 Add relaxations for non empty responses
             \n
