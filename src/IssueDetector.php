@@ -4,7 +4,7 @@
  */
 namespace ReviewCombiner;
 
-class IssueDetector
+final class IssueDetector
 {
     public function getIssue(string $text): ?string
     {
