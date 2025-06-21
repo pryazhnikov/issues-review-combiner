@@ -5,6 +5,7 @@
 namespace ReviewCombiner;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class IssueDetectorTest extends TestCase
 {
@@ -27,12 +28,7 @@ class IssueDetectorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerGetIssue
-     *
-     * @param string $line
-     * @param string|null $expectedIssue
-     */
+    #[DataProvider('providerGetIssue')]
     public function testGetIssue(string $line, ?string $expectedIssue): void
     {
         $detector = new IssueDetector();
