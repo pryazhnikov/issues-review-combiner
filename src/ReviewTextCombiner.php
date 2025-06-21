@@ -4,18 +4,15 @@
  */
 namespace ReviewCombiner;
 
-class ReviewTextCombiner
+final class ReviewTextCombiner
 {
     private array $linesList = [];
 
     private bool $isAfterEmptyLine = false;
 
-    private IssueDetector $issueDetector;
-
-    public function __construct(IssueDetector $issueDetector)
-    {
-        $this->issueDetector = $issueDetector;
-    }
+    public function __construct(
+        private readonly IssueDetector $issueDetector,
+    ) {}
 
     public function reset()
     {
@@ -61,10 +58,8 @@ class ReviewTextCombiner
         $result = implode(
                 "\n",
                 array_map(
-                    function ($item) {
-                        return $this->getOutputItemString($item);
-                    },
-                    $this->linesList
+                    fn ($item): string => $this->getOutputItemString($item),
+                    $this->linesList,
                 )
             ) . "\n";
 
