@@ -13,6 +13,9 @@ final class ReviewTextCombiner
     /** @var IOutputItem[] */
     private array $linesList = [];
 
+    /** @var IssueRelatedLines[] */
+    private array $issueOutputItems = [];
+
     private bool $isAfterEmptyLine = false;
 
     public function __construct(
@@ -22,6 +25,7 @@ final class ReviewTextCombiner
     public function reset()
     {
         $this->linesList = [];
+        $this->issueOutputItems = [];
         $this->isAfterEmptyLine = false;
     }
 
@@ -31,10 +35,12 @@ final class ReviewTextCombiner
         $isEmptyLine = $this->isEmptyLine($line);
         $lineIssue = $this->issueDetector->getIssue($line);
         if ($lineIssue) {
-            if (!isset($this->linesList[$lineIssue])) {
-                $this->linesList[$lineIssue] = new IssueRelatedLines($lineIssue);
+            if (!isset($this->issueOutputItems[$lineIssue])) {
+                $this->issueOutputItems[$lineIssue] = new IssueRelatedLines($lineIssue);
+                $this->linesList[] = $this->issueOutputItems[$lineIssue];
             }
-            $this->linesList[$lineIssue]->addLine($line);
+
+            $this->issueOutputItems[$lineIssue]->addLine($line);
         } elseif (!$isEmptyLine) {
             $this->linesList[] = new PlainLine($line);
         }
