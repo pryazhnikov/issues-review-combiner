@@ -4,8 +4,13 @@
  */
 namespace ReviewCombiner;
 
+use ReviewCombiner\Output\IOutputItem;
+use ReviewCombiner\Output\PlainLine;
+use ReviewCombiner\Output\IssueRelatedLines;
+
 final class ReviewTextCombiner
 {
+    /** @var IOutputItem[] */
     private array $linesList = [];
 
     private bool $isAfterEmptyLine = false;
@@ -53,7 +58,7 @@ final class ReviewTextCombiner
         $result = implode(
                 "\n",
                 array_map(
-                    fn ($item): string => $item->toOutputString(),
+                    fn (IOutputItem $item): string => $item->toOutputString(),
                     $this->linesList,
                 )
             ) . "\n";

@@ -2,9 +2,9 @@
 /**
  * @author Victor Pryazhnikov <victor@pryazhnikov.com>
  */
-namespace ReviewCombiner;
+namespace ReviewCombiner\Output;
 
-readonly final class PlainLine
+readonly final class PlainLine implements IOutputItem
 {
     public function __construct(
         private string $line

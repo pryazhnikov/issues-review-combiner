@@ -2,9 +2,9 @@
 /**
  * @author Victor Pryazhnikov <victor@pryazhnikov.com>
  */
-namespace ReviewCombiner;
+namespace ReviewCombiner\Output;
 
-final class IssueRelatedLines
+final class IssueRelatedLines implements IOutputItem
 {
     private array $lines = [];
 
