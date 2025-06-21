@@ -14,6 +14,8 @@ final class IssueRelatedLines implements IOutputItem
 
     public function addLine(string $line): void
     {
+        // Key is used to prevent the adding of the same lines of text.
+        // Actually we need an ordered set here, but PHP offers a sorted associative array instead
         $this->lines[$line] = $line;
     }
 

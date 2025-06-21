@@ -35,6 +35,9 @@ final class ReviewTextCombiner
         $isEmptyLine = $this->isEmptyLine($line);
         $lineIssue = $this->issueDetector->getIssue($line);
         if ($lineIssue) {
+            /**
+             * All lines related to the same issue will be aggregated and written together.
+             */
             if (!isset($this->issueOutputItems[$lineIssue])) {
                 $this->issueOutputItems[$lineIssue] = new IssueRelatedLines($lineIssue);
                 $this->linesList[] = $this->issueOutputItems[$lineIssue];
@@ -42,6 +45,10 @@ final class ReviewTextCombiner
 
             $this->issueOutputItems[$lineIssue]->addLine($line);
         } elseif (!$isEmptyLine) {
+            /**
+             * Empty lines from input will be ignored and replaced by issue splitters.
+             * @see self::getIssueSplitter()
+             */
             $this->linesList[] = new PlainLine($line);
         }
 
@@ -62,14 +69,18 @@ final class ReviewTextCombiner
     public function getOutputText(): string
     {
         $result = implode(
-                "\n",
+                $this->getIssueSplitter(),
                 array_map(
                     fn (IOutputItem $item): string => $item->toOutputString(),
                     $this->linesList,
                 )
-            ) . "\n";
+            ) . $this->getIssueSplitter();
 
         return $result;
     }
 
+    private function getIssueSplitter(): string
+    {
+        return PHP_EOL;
+    }
 }
