@@ -4,9 +4,17 @@
  */
 namespace ReviewCombiner;
 
+use ReviewCombiner\Output\IOutputItem;
+use ReviewCombiner\Output\PlainLine;
+use ReviewCombiner\Output\IssueRelatedLines;
+
 final class ReviewTextCombiner
 {
+    /** @var IOutputItem[] */
     private array $linesList = [];
+
+    /** @var IssueRelatedLines[] */
+    private array $issueOutputItems = [];
 
     private bool $isAfterEmptyLine = false;
 
@@ -17,6 +25,7 @@ final class ReviewTextCombiner
     public function reset()
     {
         $this->linesList = [];
+        $this->issueOutputItems = [];
         $this->isAfterEmptyLine = false;
     }
 
@@ -28,15 +37,19 @@ final class ReviewTextCombiner
         if ($lineIssue) {
             /**
              * All lines related to the same issue will be aggregated and written together.
-             * Key is used to prevent the adding of the same lines of text.
              */
-            $this->linesList[$lineIssue][$line] = $line;
+            if (!isset($this->issueOutputItems[$lineIssue])) {
+                $this->issueOutputItems[$lineIssue] = new IssueRelatedLines($lineIssue);
+                $this->linesList[] = $this->issueOutputItems[$lineIssue];
+            }
+
+            $this->issueOutputItems[$lineIssue]->addLine($line);
         } elseif (!$isEmptyLine) {
             /**
              * Empty lines from input will be ignored and replaced by issue splitters.
-             * @see getOutputText()
+             * @see self::getIssueSplitter()
              */
-            $this->linesList[] = $line;
+            $this->linesList[] = new PlainLine($line);
         }
 
         $this->isAfterEmptyLine = $isEmptyLine;
@@ -56,28 +69,18 @@ final class ReviewTextCombiner
     public function getOutputText(): string
     {
         $result = implode(
-                "\n",
+                $this->getIssueSplitter(),
                 array_map(
-                    fn ($item): string => $this->getOutputItemString($item),
+                    fn (IOutputItem $item): string => $item->toOutputString(),
                     $this->linesList,
                 )
-            ) . "\n";
+            ) . $this->getIssueSplitter();
 
         return $result;
     }
 
-    /**
-     * @param array|string $item
-     * @return string
-     */
-    private function getOutputItemString($item): string
+    private function getIssueSplitter(): string
     {
-        if (is_array($item)) {
-            $result = implode(PHP_EOL, $item);
-        } else {
-            $result = $item;
-        }
-
-        return $result . PHP_EOL;
+        return PHP_EOL;
     }
 }
