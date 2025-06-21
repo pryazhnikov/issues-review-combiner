@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class IssueDetectorTest extends TestCase
 {
-    public function providerGetIssue(): array
+    public static function providerGetIssue(): array
     {
         return [
             'Empty case #1' => ['', null],
