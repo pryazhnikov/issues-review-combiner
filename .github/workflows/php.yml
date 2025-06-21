@@ -26,5 +26,8 @@ jobs:
     - name: Install dependencies
       run: composer install --dev --prefer-dist --no-progress
 
+    - name: Run security audit
+      run: composer audit
+
     - name: Run test suite
       run: vendor/bin/phpunit
