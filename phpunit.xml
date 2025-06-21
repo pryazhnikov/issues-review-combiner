@@ -9,6 +9,9 @@
     displayDetailsOnTestsThatTriggerErrors="true"
     displayDetailsOnTestsThatTriggerNotices="true"
     displayDetailsOnTestsThatTriggerWarnings="true"
+    failOnPhpunitDeprecation="true"
+    failOnWarning="true"
+    failOnDeprecation="true"
 >
     <testsuites>
         <testsuite name="All Tests">
