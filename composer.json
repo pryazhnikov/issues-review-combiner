@@ -3,7 +3,8 @@
     "description": "The combiner of issues related texts",
     "type": "project",
     "require": {
-        "php": "^8.3 || ^8.4"
+        "php": "^8.3 || ^8.4",
+        "symfony/console": "^7.0"
     },
     "license": "MIT",
     "authors": [
