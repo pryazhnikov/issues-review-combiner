@@ -5,14 +5,10 @@
  */
 require(__DIR__ . "/../vendor/autoload.php");
 
-use \ReviewCombiner\IssueDetector;
-use \ReviewCombiner\ReviewTextCombiner;
+use Symfony\Component\Console\Application;
+use ReviewCombiner\Commands\CombineCommand;
 
-$issueDetector = new IssueDetector();
-$combiner = new ReviewTextCombiner($issueDetector);
-
-while ($line = fgets(STDIN)) {
-    $combiner->addInputLine($line);
-}
-
-print $combiner->getOutputText();
+$application = new Application('Review Text Combiner', '1.0.0');
+$application->add(new CombineCommand());
+$application->setDefaultCommand('combine', true);
+$application->run();
