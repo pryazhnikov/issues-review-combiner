@@ -8,7 +8,7 @@ require(__DIR__ . "/../vendor/autoload.php");
 use Symfony\Component\Console\Application;
 use ReviewCombiner\Commands\CombineCommand;
 
-$application = new Application('Review Combiner', '1.0.0');
+$application = new Application('Review Text Combiner', '1.0.0');
 $application->add(new CombineCommand());
 $application->setDefaultCommand('combine', true);
 $application->run();

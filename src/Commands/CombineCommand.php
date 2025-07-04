@@ -18,10 +18,10 @@ class CombineCommand extends Command
     {
         $this
             ->setName('combine')
-            ->setDescription('Reads input from STDIN and combines issues related texts')
+            ->setDescription('Reads text from the input, combines issues related texts and writes it into output')
             ->addOption('input', 'i', InputOption::VALUE_REQUIRED, 'Input file (default: STDIN)')
             ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output file (default: STDOUT)')
-            ->setHelp('This command reads input and combines issues related texts using ReviewTextCombiner');
+            ->setHelp('This command reads input and combines issues related lines together');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
